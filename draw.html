@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.21.1/cytoscape.min.js" integrity="sha512-H44mkyNG9R5Y8NDjFoZ0lnMGgxfsbfbuewUNJJjecVOUzR3n/JL8+UFc07pP74T5tA+aGOMKCwazdDYwoquE8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    #cy {
+  height: 100%;
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"><h3>Graph Algorithms in JavaScript</h3></a>
+        <!--- 2 links to the right of navbar -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">Text Input</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="draw.html">Draw</a>
+            </li>
+    
+    </div>
+</nav>
+
+<div class="row" style="height: 100vh;">
+    <div class="col-sm-4 bg-dark" style="padding-left: 1%;">
+        <h4 class="text-white lead"> Choose an Option from the ones below : </h1><br>
+            <!---4 Rounded Large Buttons with Boostrap 5 icons, Add Node, Delete Node, Add Edge, Delete Edge with selected button highlighted-->
+            <div class="btn-group-horizontal" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-secondary" onclick="selectOption('addNode')">
+                    <i class="fas fa-plus"></i> Add Node
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="selectOption('deleteNode')">
+                    <i class="fas fa-minus"></i> Delete Node
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="selectOption('addEdge')">
+                    <i class="fas fa-plus"></i> Add Edge
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="selectOption('removeEdge')">
+                    <i class="fas fa-minus"></i> Delete Edge
+                </button>
+                </div>
+                <br>
+            <button class="btn btn-primary" onclick="onSubmitButton()">Submit</button>
+        
+    </div>
+    <div class="col-sm-8" id="cy">Canvas</div>
+  </div>
+  <script>
+      let selectedOption = 'addNode';
+      let noOfNodes = 1;
+      let noOfEdges = 0;
+
+      let selectedNodesForEdge = [];
+
+      function selectOption(val){
+          selectedOption = val;
+            document.getElementById("cy").style.cursor = "pointer";
+      }
+
+
+ let cy = window.cy = cytoscape({
+        container: document.getElementById('cy'),
+        elements: {
+          nodes: [],
+          edges: []
+        },
+        style: [
+          {
+            selector: 'node',
+            style: {
+              'background-color': '#666',
+              'label': 'data(id)'
+            }
+          },
+          {
+            selector: 'edge',
+            style: {
+              'width': 3,
+              'line-color': '#ccc',
+              'target-arrow-color': '#ccc',
+              'target-arrow-shape': 'triangle'
+            }
+          }
+        ]
+      });
+
+      cy.layout({
+        name: 'preset',
+        fit: true
+      }).run();
+
+      cy.on('tap', function(event){
+            // target holds a reference to the originator
+            // of the event (core or element)
+            var evtTarget = event.target;
+            console.log(evtTarget);
+
+            if( evtTarget === cy ){ // tap on background
+                console.log('tap on background');
+                if(selectedOption == "addNode"){
+                    cy.add([{
+                        group: 'nodes',
+                        data: {
+                            id: 'n' + noOfNodes
+                        },
+                        renderedPosition: {
+                             x: event.renderedPosition.x,
+                            y: event.renderedPosition.y,
+                    },
+                    }]);
+                    noOfNodes++;
+                }
+            } else { // tap on node or edge
+                if(selectedOption == "addEdge"){
+                    //get currently selected node
+                    let selectedNode = event.target;
+                    // check if it is node or edge
+                    if(!selectedNode.isNode()) return;
+                    selectedNodesForEdge.push(selectedNode)
+                    console.log(selectedNodesForEdge[0]);
+                    if(selectedNodesForEdge.length == 2){
+                        console.log("adding edge");
+                        cy.add([{
+                            group: 'edges',
+                            data: {
+                                id: 'e' + noOfEdges,
+                                source: selectedNodesForEdge[0].id(),
+                                target: selectedNodesForEdge[1].id(),
+                                weight : 1
+                            }
+                        }]);
+                        noOfEdges++;
+                        selectedNodesForEdge = [];
+                    }
+                   
+                }
+                else if(selectedOption == "removeEdge" || selectedOption == "deleteNode"){
+                    console.log(event.target.id());
+                    cy.remove(event.target);
+                    }
+            }
+});
+
+    function onSubmitButton(){
+      let formData = getFormData();
+      let graphConnections = extractGraphConnectionsFromInputTextFormData(formData.graphInputText);
+     
+      for(let i=0;i<graphConnections.length;i++){
+        let graphConnection = graphConnections[i];
+        
+
+        if (!addedNodes.has(graphConnection.to)) {
+          addedNodes.add(graphConnection.to);
+          cy.add([
+            {
+              group: 'nodes',
+              data: {
+                id: graphConnection.to
+              }
+            }
+          ]);
+        }
+        cy.add({
+          group: 'edges',
+          data: {
+            id: graphConnection.from + '-' + graphConnection.to,
+            source: graphConnection.from,
+            target: graphConnection.to,
+            weight: graphConnection.weight
+          }
+        });
+      }
+    }
+
+
+
+
+  </script>
+</body>
+</html>
