@@ -11,7 +11,8 @@
   <script src="./js/inputs/model.js"></script>
   <script src="./js/helpers/graphColorHelper.js"></script>
   <script src="./js/algorithms/bfs.js"></script>
-  <script src="./js/helpers/graphCyInteractionHelper.js"></script>
+  <script src="./js/helpers/stepsExporter.js"></script>
+  <script src="./js/helpers/step.js"></script>
   
 <style>
     #cy {
@@ -60,7 +61,13 @@
                 <option>Prims</option>
                 <option>Kruskal</option>
               </select><br>
-              <button class="btn btn-primary" onclick="runAlgorithm()" id="runAlgorithmButton">Run Algorithm</button>
+              <select class="form-select" id="selectStartNode">
+              </select><br>
+              <select class="form-select" id="selectEndNode">
+              </select><br>
+              <button class="btn btn-primary" onclick="runAlgorithm()" id="runAlgorithmButton">Run Algorithm</button> <br> <br>
+              <button class="btn btn-primary" onclick="colorGraphOnceForward()" id="runAlgorithmButton">Next Step</button> <br><br>
+              <button class="btn btn-primary" onclick="colorGraphOnceBackward()" id="runAlgorithmButton">Previous Step</button> <br><br>
             </div>
       
 
@@ -98,9 +105,9 @@ let cy = window.cy = cytoscape({
 //my custom initializer
     document.getElementById("algorithmDiv").style.display = "none";
     const modelInstance = new Model();
-    const graphCyInteractionHelperInstance = new GraphCyInteractionHelper(cy);
-    const graphColorHelperInstance = new GraphColorHelper('#2ecc71', '#2ecc71',graphCyInteractionHelperInstance);
-    const bfsInstance = new BFS('A','D', modelInstance, graphColorHelperInstance);
+    const bfsInstance = new BFS(modelInstance);
+    const graphColorHelperInstance = new GraphColorHelper(cy,'#2ecc71', '#2ecc71');
+    const stepExporter = new StepsExporter();
 
     function onSubmitButton(){
       let formData = getFormData();
@@ -111,6 +118,7 @@ let cy = window.cy = cytoscape({
         let graphConnection = graphConnections[i];
         let from = graphConnection.from;
         let to = graphConnection.to;
+        let weight = graphConnection.weight;
         if (!modelInstance.hasNode(from)) {
           modelInstance.addNode(from);
           console.log('from : '+from);
@@ -142,10 +150,10 @@ let cy = window.cy = cytoscape({
           cy.add({
           group: 'edges',
           data: {
-            id: from  + to,
+            id: from  + '-'+ to,
             source: from,
             target: to,
-            weight: 1
+            weight: weight
           }
         });
         }
@@ -157,21 +165,49 @@ let cy = window.cy = cytoscape({
         fit: true
       }).run();
 
-      
-      console.log(cy.edges());
-
       //if no errors in generating graph then show the select element and submit button
+      //Add Nodes to the select element for start and end
+      let nodes = modelInstance.getNodes();
+      let selectStartNode = document.getElementById("selectStartNode");
+      let selectEndNode = document.getElementById("selectEndNode");
+      selectStartNode.innerHTML = "";
+      selectEndNode.innerHTML = "";
+      for(let i=0;i<nodes.length;i++){
+        let node = nodes[i];
+        let option = document.createElement("option");
+        let option1 = document.createElement("option");
+        option.text = node;
+        option.value = node;
+        option1.text = node;
+        option1.value = node;
+        selectStartNode.add(option1);
+        selectEndNode.add(option);
+      }
       document.getElementById("algorithmDiv").style.display = "block";
     }
 
 
-
     function runAlgorithm(){
       let selectedAlgorithm = document.getElementById("selectAlgorithm").value;
+      let startNode = document.getElementById("selectStartNode").value;
+      let endNode = document.getElementById("selectEndNode").value;
+      console.log(startNode,endNode);
+      
       if(selectedAlgorithm == "BFS"){
         console.log("BFS");
-        bfsInstance.runOnce();
+        bfsInstance.setStartAndEndNode(startNode,endNode);
+        let data = bfsInstance.run().data;
+        graphColorHelperInstance.setEdges(data[data.length-1].edges);
+        console.log(graphColorHelperInstance.edges);
       }
+    }
+
+    function colorGraphOnceForward(){
+      graphColorHelperInstance.colorGraphOnceForward();
+    }
+
+    function colorGraphOnceBackward(){
+      graphColorHelperInstance.colorGraphOnceBackward();
     }
 
 

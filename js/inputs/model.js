@@ -10,6 +10,14 @@ class Model{
         return Object.keys(this.matrix[node]).length > 0;
     }
 
+    isDirected(){
+        return this.directed;
+    }
+
+    getNodes(){
+        return [...Object.keys(this.matrix)];
+    }
+
     getNeighbors(node){
         console.log('Nieghbours '+this.matrix[node]);
         if(this.hasNeighbors(node)) return [...Object.keys(this.matrix[node])].sort();
