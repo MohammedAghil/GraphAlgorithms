@@ -1,12 +1,6 @@
 function getFormData(){
-    let vertices = document.getElementById('vertices');
-    let edges = document.getElementById('edges');
     let graphInputText = document.getElementById('graphInputText');
-    return {
-      vertices: vertices.value,
-      edges: edges.value,
-      graphInputText: graphInputText.value
-    }
+    return graphInputText.value;
   }
 
 function extractGraphConnectionsFromInputTextFormData(graphInputText){

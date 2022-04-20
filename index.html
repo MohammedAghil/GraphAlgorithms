@@ -11,6 +11,7 @@
   <script src="./js/inputs/model.js"></script>
   <script src="./js/helpers/graphColorHelper.js"></script>
   <script src="./js/algorithms/bfs.js"></script>
+  <script src="./js/algorithms/dfs.js"></script>
   <script src="./js/helpers/stepsExporter.js"></script>
   <script src="./js/helpers/step.js"></script>
   
@@ -38,41 +39,58 @@
 </nav>
 
 <div class="row" style="height: 100vh;">
-    <div class="col-sm-4 bg-dark" style="padding-left: 1%;">
-        <h4 class="text-white lead"> Here You may fill in data and Run Algorithms on it.</h1><br>
-            <div class="row">
-                <div class="col">
-                  <input type="number" class="form-control" placeholder="No of Vertices" name="vertices" id="vertices">
-                </div>
-                <div class="col">
-                  <input type="number" class="form-control" placeholder="No of Edges" name="edges" id="edges">
-                </div>
-              </div>
+    <div class="col-sm-3 bg-dark" style="padding-left: 1%;">
+        <h4 class="text-white lead"> Here You may fill in Data in the Text Area and Run Algorithms.</h1>
             <div class="mb-3">
-                <label for="graphInputText" class="form-label">Enter </label>
-                <textarea class="form-control" rows="5" id="graphInputText" name="graphInputText"></textarea>
+                <textarea class="form-control" rows="6" id="graphInputText" name="graphInputText"></textarea>
               </div>
-            <button class="btn btn-primary" onclick="onSubmitButton()">Generate Graph</button>
+              <div class="d-grid">
+                <button class="btn btn-success btn-block" onclick="onSubmitButton()">Generate Graph</button>
+              </div>
+              <br>
             <div class="mb-3" id="algorithmDiv">
-              <label for="selectAlgorithm" class="form-label">Select a Graph Algorithm to Run</label>
+              <div class="row text-center display-6">
+                <h4 class="text-white text-italic">The Generated Graph has<br><p id="nodesAndEdgesDisplay"></p></h4>
+                </div>
+              <label for="selectAlgorithm" class="form-label text-white"><i>Choose a Graph Algorithm</i></label>
               <select class="form-select" id="selectAlgorithm">
                 <option>BFS</option>
                 <option>DFS</option>
                 <option>Prims</option>
                 <option>Kruskal</option>
               </select><br>
-              <select class="form-select" id="selectStartNode">
-              </select><br>
-              <select class="form-select" id="selectEndNode">
-              </select><br>
-              <button class="btn btn-primary" onclick="runAlgorithm()" id="runAlgorithmButton">Run Algorithm</button> <br> <br>
-              <button class="btn btn-primary" onclick="colorGraphOnceForward()" id="runAlgorithmButton">Next Step</button> <br><br>
-              <button class="btn btn-primary" onclick="colorGraphOnceBackward()" id="runAlgorithmButton">Previous Step</button> <br><br>
+              <div class="row">
+                <div class="col">
+                  <label for="selectStartNode" class="form-label text-white"><i>Start Node</i></label>
+                  <select class="form-select" id="selectStartNode">
+                  </select>
+                </div>
+                <div class="col">
+                  <label for="selectEndNode" class="form-label text-white"><i>End Node</i></label>
+                  <select class="form-select" id="selectEndNode">
+                  </select>
+                </div>
+              </div>
+              <br>
+              <div class="d-grid">
+                <button class="btn btn-primary btn-block" onclick="runAlgorithm()" id="runAlgorithmButton">Run Algorithm</button> <br> <br>
+              </div>
+              
+              <div class="row">
+                <div class="col">
+                  <button class="btn btn-outline-secondary form-control" onclick="colorGraphOnceBackward()" id="runAlgorithmButton">Previous Step</button> <br><br> 
+                </div>
+                <div class="col">
+                  <button class="btn btn-outline-primary form-control" onclick="colorGraphOnceForward()" id="runAlgorithmButton">Next Step</button> <br><br>
+                </div>
+
+              </div>
+              
             </div>
       
 
     </div>
-    <div class="col-sm-8" id="cy">Canvas</div>
+    <div class="col-sm-9" id="cy">Canvas</div>
   </div>
   <script>
 //initialize cytoscape
@@ -106,12 +124,13 @@ let cy = window.cy = cytoscape({
     document.getElementById("algorithmDiv").style.display = "none";
     const modelInstance = new Model();
     const bfsInstance = new BFS(modelInstance);
+    const dfsInstance = new DFS(modelInstance);
     const graphColorHelperInstance = new GraphColorHelper(cy,'#2ecc71', '#2ecc71');
     const stepExporter = new StepsExporter();
 
     function onSubmitButton(){
       let formData = getFormData();
-      let graphConnections = extractGraphConnectionsFromInputTextFormData(formData.graphInputText);
+      let graphConnections = extractGraphConnectionsFromInputTextFormData(formData);
       
           
       for(let i=0;i<graphConnections.length;i++){
@@ -183,6 +202,8 @@ let cy = window.cy = cytoscape({
         selectStartNode.add(option1);
         selectEndNode.add(option);
       }
+
+      document.getElementById("nodesAndEdgesDisplay").innerHTML = " "+nodes.length+" nodes and "+cy.edges().length+" edges";
       document.getElementById("algorithmDiv").style.display = "block";
     }
 
@@ -199,6 +220,16 @@ let cy = window.cy = cytoscape({
         let data = bfsInstance.run().data;
         graphColorHelperInstance.setEdges(data[data.length-1].edges);
         console.log(graphColorHelperInstance.edges);
+      }
+      else if(selectedAlgorithm == "DFS"){
+        console.log("DFS");
+        dfsInstance.setStartAndEndNode(startNode,endNode);
+        let data = dfsInstance.run().data;
+        graphColorHelperInstance.setEdges(data[data.length-1].edges);
+        console.log(graphColorHelperInstance.edges);
+      }
+      else{
+        console.log("No Algorithm Selected");
       }
     }
 

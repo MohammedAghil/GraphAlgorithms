@@ -1,8 +1,6 @@
 class Model{
-    constructor(vertices=null,edges=null,directed=false){
+    constructor(directed=false){
         this.matrix = {}; //adjacency matrix in which edges and nodes are stored
-        this.vertices = vertices;
-        this.edges = edges; 
         this.directed = directed;
     }
 
