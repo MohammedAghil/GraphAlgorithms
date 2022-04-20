@@ -203,12 +203,13 @@ let cy = window.cy = cytoscape({
         selectEndNode.add(option);
       }
 
-      document.getElementById("nodesAndEdgesDisplay").innerHTML = " "+nodes.length+" nodes and "+cy.edges().length+" edges";
+      document.getElementById("nodesAndEdgesDisplay").innerHTML = " "+nodes.length+" nodes and "+cy.edges().length+" edges.";
       document.getElementById("algorithmDiv").style.display = "block";
     }
 
 
     function runAlgorithm(){
+      graphColorHelperInstance.resetAllColors();
       let selectedAlgorithm = document.getElementById("selectAlgorithm").value;
       let startNode = document.getElementById("selectStartNode").value;
       let endNode = document.getElementById("selectEndNode").value;
@@ -216,6 +217,7 @@ let cy = window.cy = cytoscape({
       
       if(selectedAlgorithm == "BFS"){
         console.log("BFS");
+        bfsInstance.reset();
         bfsInstance.setStartAndEndNode(startNode,endNode);
         let data = bfsInstance.run().data;
         graphColorHelperInstance.setEdges(data[data.length-1].edges);
@@ -223,6 +225,7 @@ let cy = window.cy = cytoscape({
       }
       else if(selectedAlgorithm == "DFS"){
         console.log("DFS");
+        dfsInstance.reset();
         dfsInstance.setStartAndEndNode(startNode,endNode);
         let data = dfsInstance.run().data;
         graphColorHelperInstance.setEdges(data[data.length-1].edges);

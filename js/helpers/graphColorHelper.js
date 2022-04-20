@@ -28,6 +28,16 @@ class GraphColorHelper{
         this.traverseBackward(edge.split('-')[0],edge.split('-')[1]);
     }
 
+    resetAllColors(){
+        this.index=0;
+        this.cy.nodes().forEach(node => {
+            this.resetNodeColor(node.id());
+        });
+        this.cy.edges().forEach(edge => {
+            this.resetEdgeColor(edge);
+        });
+    }
+
 
 
     getNodeById(id){

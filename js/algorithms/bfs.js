@@ -8,7 +8,18 @@ class BFS{
         this.graph = graphModel;
         this.edges = [];
         this.stepsExport = [];
+        this.finished = false;
 
+    }
+    reset(){
+        this.startNode = null;
+        this.endNode = null;
+        this.visited = new Set();
+        this. queue = [];
+        this.step = 0;
+        this.edges = [];
+        this.stepsExport = [];
+        this.finished = false;
     }
 
     setStartAndEndNode(startNode,endNode){
@@ -17,39 +28,39 @@ class BFS{
         this.queue.push(startNode);
         this.visited.add(startNode);
         this.previousNode = null;
-        this.currentNode = startNode;
     }
 
 
     run(){
         this.step+=1;
         console.log('STEP : '+this.step);
-        while(this.queue.length > 0){
+        while(this.queue.length > 0 && !this.finished){
             console.log('Queue: ' + this.queue);
-            this.currentNode = this.queue.shift();
+            let currentNode = this.queue.shift();
             console.log('Visited: ' + [...this.visited]);
-            console.log('Current ' + this.currentNode);
-            console.log('Previous ' + this.previousNode);
-            if(this.currentNode == this.endNode){
+            console.log('edges: ' + this.edges);
+            console.log('Current ' + currentNode);
+            if(currentNode == this.endNode){
                 console.log('Found the end node');
-                return {data:this.stepsExport,finished:true};
+                this.finished = true;
+                break;
             }
-            let adjacentNodes = this.graph.getNeighbors(this.currentNode);
+            let adjacentNodes = this.graph.getNeighbors(currentNode);
             console.log('Adjacent nodes: ' + [...adjacentNodes]);
             for(let adjacentNode of adjacentNodes){
                 console.log('Adjacent node: ' + adjacentNode);
                 console.log('Visited: ' + [...this.visited]);
                 if(!(this.visited.has(adjacentNode))){
-                    this.edges.push(this.currentNode+'-'+adjacentNode);
-                    console.log('adding Edge' + this.currentNode + '-' + adjacentNode);
+                    this.edges.push(currentNode+'-'+adjacentNode);
+                    console.log('adding Edge' + currentNode + '-' + adjacentNode);
                     //this.graphColorHelper.traverseForward(this.currentNode,adjacentNode);
                     this.stepsExport.push({
-                        currentNode: this.currentNode,
+                        currentNode: currentNode,
                         adjacentNode: adjacentNode,
                         step: this.step,
                         visited: [...this.visited],
                         queue: [...this.queue],
-                        edge: this.currentNode+'-'+adjacentNode,
+                        edge: currentNode+'-'+adjacentNode,
                         edges:[...this.edges],
                         finished:false
                     });
@@ -63,7 +74,8 @@ class BFS{
                 }
             }
         }
-        return {data:this.stepsExport,finished:false};
+
+        return {data:this.stepsExport,finished:this.finished};
     }
 
 }

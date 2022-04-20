@@ -11,6 +11,16 @@ class DFS{
         this.currentNode = null;
         this.stepsExport = [];
     }
+    reset(){
+        this.startNode = null;
+        this.endNode = null;
+        this.visited = new Set();
+        this. queue = [];
+        this.step = 0;
+        this.edges = [];
+        this.stepsExport = [];
+        this.finished = false;
+    }
 
     setStartAndEndNode(startNode,endNode){
         this.startNode = startNode;
