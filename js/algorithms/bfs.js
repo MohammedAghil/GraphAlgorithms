@@ -67,6 +67,11 @@ class BFS{
                     console.log(adjacentNode+' not present so pushing');
                     this.queue.push(adjacentNode);
                     this.visited.add(adjacentNode);
+                    if(adjacentNode == this.endNode){
+                        console.log('Found the end node');
+                        this.finished = true;
+                        break;
+                    }
                 }
 
                 else{
