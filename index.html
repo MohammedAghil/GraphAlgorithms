@@ -92,6 +92,9 @@
     </div>
     <div class="col-sm-9" id="cy">Canvas</div>
   </div>
+
+
+
   <script>
 //initialize cytoscape
 let cy = window.cy = cytoscape({
@@ -128,10 +131,14 @@ let cy = window.cy = cytoscape({
     const graphColorHelperInstance = new GraphColorHelper(cy,'#2ecc71', '#2ecc71');
     const stepExporter = new StepsExporter();
 
+  //on submit button click (generate graph)
     function onSubmitButton(){
       let formData = getFormData();
       let graphConnections = extractGraphConnectionsFromInputTextFormData(formData);
-      
+      modelInstance.reset();
+      //delete all nodes and edges from cytoscape
+      cy.remove('node');
+      cy.remove('edge');
           
       for(let i=0;i<graphConnections.length;i++){
         let graphConnection = graphConnections[i];
@@ -202,47 +209,11 @@ let cy = window.cy = cytoscape({
         selectStartNode.add(option1);
         selectEndNode.add(option);
       }
-
       document.getElementById("nodesAndEdgesDisplay").innerHTML = " "+nodes.length+" nodes and "+cy.edges().length+" edges.";
       document.getElementById("algorithmDiv").style.display = "block";
     }
 
 
-    function runAlgorithm(){
-      graphColorHelperInstance.resetAllColors();
-      let selectedAlgorithm = document.getElementById("selectAlgorithm").value;
-      let startNode = document.getElementById("selectStartNode").value;
-      let endNode = document.getElementById("selectEndNode").value;
-      console.log(startNode,endNode);
-      
-      if(selectedAlgorithm == "BFS"){
-        console.log("BFS");
-        bfsInstance.reset();
-        bfsInstance.setStartAndEndNode(startNode,endNode);
-        let data = bfsInstance.run().data;
-        graphColorHelperInstance.setEdges(data[data.length-1].edges);
-        console.log(graphColorHelperInstance.edges);
-      }
-      else if(selectedAlgorithm == "DFS"){
-        console.log("DFS");
-        dfsInstance.reset();
-        dfsInstance.setStartAndEndNode(startNode,endNode);
-        let data = dfsInstance.run().data;
-        graphColorHelperInstance.setEdges(data[data.length-1].edges);
-        console.log(graphColorHelperInstance.edges);
-      }
-      else{
-        console.log("No Algorithm Selected");
-      }
-    }
-
-    function colorGraphOnceForward(){
-      graphColorHelperInstance.colorGraphOnceForward();
-    }
-
-    function colorGraphOnceBackward(){
-      graphColorHelperInstance.colorGraphOnceBackward();
-    }
 
 
   </script>

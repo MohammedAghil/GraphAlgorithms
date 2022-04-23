@@ -4,6 +4,10 @@ class Model{
         this.directed = directed;
     }
 
+    reset(){
+        this.matrix = {};
+    }
+
     hasNeighbors(node){
         return Object.keys(this.matrix[node]).length > 0;
     }
@@ -39,18 +43,15 @@ class Model{
     }
 
     addEdge(a,b,edgeObject=1){
-        //TO DO  : Write check to find if the vertices are more than what is said and if there are more edges than what is said 
         if(this.hasEdge(a,b)) return false;
         //create keys if not present and then get indexes
-        
         if(!this.hasNode(a)) this.addNode(a);
         if(!this.hasNode(b)) this.addNode(b);
-
         this.matrix[a][b]=edgeObject;
         if(!this.directed) this.matrix[b][a]=edgeObject;
         
     }
-
+    
     removeEdge(a,b){
         this.matrix[a].delete(b);
     }

@@ -4,12 +4,24 @@
   <title>Bootstrap Example</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.21.1/cytoscape.min.js" integrity="sha512-H44mkyNG9R5Y8NDjFoZ0lnMGgxfsbfbuewUNJJjecVOUzR3n/JL8+UFc07pP74T5tA+aGOMKCwazdDYwoquE8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="./js/inputs/processors/textProcessor.js"></script>
+  <script src="./js/inputs/model.js"></script>
+  <script src="./js/helpers/graphColorHelper.js"></script>
+  <script src="./js/algorithms/bfs.js"></script>
+  <script src="./js/algorithms/dfs.js"></script>
+  <script src="./js/helpers/stepsExporter.js"></script>
+  <script src="./js/helpers/step.js"></script>
 <style>
     #cy {
   height: 100%;
+}
+.clicked {
+   background-color: black;
 }
 </style>
 </head>
@@ -31,42 +43,75 @@
 </nav>
 
 <div class="row" style="height: 100vh;">
-    <div class="col-sm-4 bg-dark" style="padding-left: 1%;">
+    <div class="col-sm-3 bg-dark" style="padding-left: 1%;">
         <h4 class="text-white lead"> Choose an Option from the ones below : </h1><br>
             <!---4 Rounded Large Buttons with Boostrap 5 icons, Add Node, Delete Node, Add Edge, Delete Edge with selected button highlighted-->
-            <div class="btn-group-horizontal" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-secondary" onclick="selectOption('addNode')">
-                    <i class="fas fa-plus"></i> Add Node
+            <div class="btn-group-vertical" role="group" aria-label="Basic example" style="width: 100%;">
+                <button type="button" class="btn btn-success btn-lg" onclick="selectOption('addNode')">
+                  <i class="fa fa-plus-circle"></i>Add Node
                 </button>
-                <button type="button" class="btn btn-secondary" onclick="selectOption('deleteNode')">
-                    <i class="fas fa-minus"></i> Delete Node
+                <button type="button" class="btn btn-success btn-lg" onclick="selectOption('addEdge')">
+                  <i class="fa fa-arrows-h" aria-hidden="true"></i> Add Edge
                 </button>
-                <button type="button" class="btn btn-secondary" onclick="selectOption('addEdge')">
-                    <i class="fas fa-plus"></i> Add Edge
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="selectOption('removeEdge')">
-                    <i class="fas fa-minus"></i> Delete Edge
+                <button type="button" class="btn btn-danger btn-lg" onclick="selectOption('removeEdge')">
+                  <i class="fa fa-trash"></i> Delete Edge/Node
                 </button>
                 </div>
                 <br>
-            <button class="btn btn-primary" onclick="onSubmitButton()">Submit</button>
+                <br>
+                <div class="d-grid">
+                  <button class="btn btn-success btn-block btn-lg" onclick="onSubmitButton()">Generate Graph</button>
+                </div>
+            <div class="mb-3" id="algorithmDiv">
+              <div class="row text-center display-6">
+                <h4 class="text-white text-italic">The Generated Graph has<br><p id="nodesAndEdgesDisplay"></p></h4>
+                </div>
+              <label for="selectAlgorithm" class="form-label text-white"><i>Choose a Graph Algorithm</i></label>
+              <select class="form-select" id="selectAlgorithm">
+                <option>BFS</option>
+                <option>DFS</option>
+                <option>Prims</option>
+                <option>Kruskal</option>
+              </select><br>
+              <div class="row">
+                <div class="col">
+                  <label for="selectStartNode" class="form-label text-white"><i>Start Node</i></label>
+                  <select class="form-select" id="selectStartNode">
+                  </select>
+                </div>
+                <div class="col">
+                  <label for="selectEndNode" class="form-label text-white"><i>End Node</i></label>
+                  <select class="form-select" id="selectEndNode">
+                  </select>
+                </div>
+              </div>
+              <br>
+              <div class="d-grid">
+                <button class="btn btn-primary btn-block" onclick="runAlgorithm()" id="runAlgorithmButton">Run Algorithm</button> <br> <br>
+              </div>
+              
+              <div class="row">
+                <div class="col">
+                  <button class="btn btn-outline-secondary form-control" onclick="colorGraphOnceBackward()" id="runAlgorithmButton">Previous Step</button> <br><br> 
+                </div>
+                <div class="col">
+                  <button class="btn btn-outline-primary form-control" onclick="colorGraphOnceForward()" id="runAlgorithmButton">Next Step</button> <br><br>
+                </div>
+
+              </div>
+              
+            </div>
         
     </div>
-    <div class="col-sm-8" id="cy">Canvas</div>
+    <div class="col-sm-9" id="cy">Canvas</div>
   </div>
   <script>
       let selectedOption = 'addNode';
       let noOfNodes = 1;
       let noOfEdges = 0;
-
       let selectedNodesForEdge = [];
 
-      function selectOption(val){
-          selectedOption = val;
-            document.getElementById("cy").style.cursor = "pointer";
-      }
-
-
+    
  let cy = window.cy = cytoscape({
         container: document.getElementById('cy'),
         elements: {
@@ -102,10 +147,10 @@
             // target holds a reference to the originator
             // of the event (core or element)
             var evtTarget = event.target;
-            console.log(evtTarget);
+           // console.log(evtTarget);
 
             if( evtTarget === cy ){ // tap on background
-                console.log('tap on background');
+                //console.log('tap on background');
                 if(selectedOption == "addNode"){
                     cy.add([{
                         group: 'nodes',
@@ -126,13 +171,13 @@
                     // check if it is node or edge
                     if(!selectedNode.isNode()) return;
                     selectedNodesForEdge.push(selectedNode)
-                    console.log(selectedNodesForEdge[0]);
+                    //console.log(selectedNodesForEdge[0]);
                     if(selectedNodesForEdge.length == 2){
                         console.log("adding edge");
                         cy.add([{
                             group: 'edges',
                             data: {
-                                id: 'e' + noOfEdges,
+                                id: selectedNodesForEdge[0].id()+'-'+selectedNodesForEdge[1].id(),
                                 source: selectedNodesForEdge[0].id(),
                                 target: selectedNodesForEdge[1].id(),
                                 weight : 1
@@ -144,44 +189,71 @@
                    
                 }
                 else if(selectedOption == "removeEdge" || selectedOption == "deleteNode"){
-                    console.log(event.target.id());
+                    //console.log(event.target.id());
                     cy.remove(event.target);
                     }
             }
 });
 
-    function onSubmitButton(){
-      let formData = getFormData();
-      let graphConnections = extractGraphConnectionsFromInputTextFormData(formData.graphInputText);
-     
-      for(let i=0;i<graphConnections.length;i++){
-        let graphConnection = graphConnections[i];
-        
+  //initialization of classes
+  document.getElementById("algorithmDiv").style.display = "none";
+    const modelInstance = new Model();
+    const bfsInstance = new BFS(modelInstance);
+    const dfsInstance = new DFS(modelInstance);
+    const graphColorHelperInstance = new GraphColorHelper(cy,'#2ecc71', '#2ecc71');
+    const stepExporter = new StepsExporter();
 
-        if (!addedNodes.has(graphConnection.to)) {
-          addedNodes.add(graphConnection.to);
-          cy.add([
-            {
-              group: 'nodes',
-              data: {
-                id: graphConnection.to
-              }
-            }
-          ]);
-        }
-        cy.add({
-          group: 'edges',
-          data: {
-            id: graphConnection.from + '-' + graphConnection.to,
-            source: graphConnection.from,
-            target: graphConnection.to,
-            weight: graphConnection.weight
-          }
-        });
+
+
+
+
+function selectOption(val){
+          selectedOption = val;
+            document.getElementById("cy").style.cursor = "pointer";
       }
+
+
+    function onSubmitButton(){
+      modelInstance.reset();
+      //get the nodes and edges from cytoscape
+      let allNodes = cy.nodes();
+      let allEdges = cy.edges();
+      //print the nodes and edges to the console in forEach loop
+      allNodes.forEach(function(node){
+        if (!modelInstance.hasNode(node)) {
+          modelInstance.addNode(node.id());
+        }
+      });
+      allEdges.forEach(function(edge){
+        if (!modelInstance.hasEdge(edge.id())) {
+          modelInstance.addEdge(edge.source().id(), edge.target().id());
+        }
+      });
+     
+      
+      //if no errors in generating graph then show the select element and submit button
+      //Add Nodes to the select element for start and end
+      
+      let nodes = modelInstance.getNodes();
+      let selectStartNode = document.getElementById("selectStartNode");
+      let selectEndNode = document.getElementById("selectEndNode");
+      selectStartNode.innerHTML = "";
+      selectEndNode.innerHTML = "";
+      for(let i=0;i<nodes.length;i++){
+        let node = nodes[i];
+        let option = document.createElement("option");
+        let option1 = document.createElement("option");
+        option.text = node;
+        option.value = node;
+        option1.text = node;
+        option1.value = node;
+        selectStartNode.add(option1);
+        selectEndNode.add(option);
+      }
+
+      document.getElementById("nodesAndEdgesDisplay").innerHTML = " "+nodes.length+" nodes and "+cy.edges().length+" edges.";
+      document.getElementById("algorithmDiv").style.display = "block";
     }
-
-
 
 
   </script>
