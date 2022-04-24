@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  <title>Graph Algorithms in JavaScript</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -16,6 +16,7 @@
   <script src="./js/algorithms/dfs.js"></script>
   <script src="./js/helpers/stepsExporter.js"></script>
   <script src="./js/helpers/step.js"></script>
+  <script src="./js/helpers/runAlgorithmHelper.js"></script>
 <style>
     #cy {
   height: 100%;
@@ -47,6 +48,9 @@
         <h4 class="text-white lead"> Choose an Option from the ones below : </h1><br>
             <!---4 Rounded Large Buttons with Boostrap 5 icons, Add Node, Delete Node, Add Edge, Delete Edge with selected button highlighted-->
             <div class="btn-group-vertical" role="group" aria-label="Basic example" style="width: 100%;">
+              <button type="button" class="btn btn-primary btn-lg" onclick="selectOption('move')">
+                <i class="fa fa-arrows"></i>Move
+              </button>
                 <button type="button" class="btn btn-success btn-lg" onclick="selectOption('addNode')">
                   <i class="fa fa-plus-circle"></i>Add Node
                 </button>
@@ -60,7 +64,7 @@
                 <br>
                 <br>
                 <div class="d-grid">
-                  <button class="btn btn-success btn-block btn-lg" onclick="onSubmitButton()">Generate Graph</button>
+                  <button class="btn btn-success btn-block btn-lg" onclick="onSubmitButton()"><i class="fa fa-object-group" aria-hidden="true"></i> Generate Graph</button>
                 </div>
             <div class="mb-3" id="algorithmDiv">
               <div class="row text-center display-6">
@@ -75,27 +79,27 @@
               </select><br>
               <div class="row">
                 <div class="col">
-                  <label for="selectStartNode" class="form-label text-white"><i>Start Node</i></label>
+                  <label for="selectStartNode" class="form-label text-white"><i><i class="fa fa-map-marker" aria-hidden="true"></i> Start Node</i></label>
                   <select class="form-select" id="selectStartNode">
                   </select>
                 </div>
                 <div class="col">
-                  <label for="selectEndNode" class="form-label text-white"><i>End Node</i></label>
+                  <label for="selectEndNode" class="form-label text-white"><i><i class="fa fa-map-marker" aria-hidden="true"></i> End Node</i></label>
                   <select class="form-select" id="selectEndNode">
                   </select>
                 </div>
               </div>
               <br>
               <div class="d-grid">
-                <button class="btn btn-primary btn-block" onclick="runAlgorithm()" id="runAlgorithmButton">Run Algorithm</button> <br> <br>
+                <button class="btn btn-primary btn-block" onclick="runAlgorithm()" id="runAlgorithmButton"><i class="fa fa-play-circle" aria-hidden="true"></i> Run Algorithm</button> <br> <br>
               </div>
               
               <div class="row">
                 <div class="col">
-                  <button class="btn btn-outline-secondary form-control" onclick="colorGraphOnceBackward()" id="runAlgorithmButton">Previous Step</button> <br><br> 
+                  <button class="btn btn-outline-secondary form-control" onclick="colorGraphOnceBackward()" id="runAlgorithmButton"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> Previous Step</button> <br><br> 
                 </div>
                 <div class="col">
-                  <button class="btn btn-outline-primary form-control" onclick="colorGraphOnceForward()" id="runAlgorithmButton">Next Step</button> <br><br>
+                  <button class="btn btn-outline-primary form-control" onclick="colorGraphOnceForward()" id="runAlgorithmButton">Next Step <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></button> <br><br>
                 </div>
 
               </div>
@@ -209,7 +213,18 @@
 
 function selectOption(val){
           selectedOption = val;
-            document.getElementById("cy").style.cursor = "pointer";
+          if(val == "addNode"){ //plus sign
+            document.getElementById("cy").style.cursor = "cell";
+          }
+          else if(val == "addEdge"){
+            document.getElementById("cy").style.cursor = "crosshair";
+          }
+          else if(val == "removeEdge"){ //show trash icon
+            document.getElementById("cy").style.cursor = "not-allowed";
+          }
+          else if(val == "move"){ 
+            document.getElementById("cy").style.cursor = "move";
+          }
       }
 
 

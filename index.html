@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  <title>Graph Algorithms in JavaScript</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,6 +14,8 @@
   <script src="./js/algorithms/dfs.js"></script>
   <script src="./js/helpers/stepsExporter.js"></script>
   <script src="./js/helpers/step.js"></script>
+  <script src="./js/helpers/runAlgorithmHelper.js"></script>
+  
   
 <style>
     #cy {
@@ -45,7 +47,7 @@
                 <textarea class="form-control" rows="6" id="graphInputText" name="graphInputText"></textarea>
               </div>
               <div class="d-grid">
-                <button class="btn btn-success btn-block" onclick="onSubmitButton()">Generate Graph</button>
+                <button class="btn btn-success btn-block" onclick="onSubmitButton()"><i class="fa fa-object-group" aria-hidden="true"></i> Generate Graph</button>
               </div>
               <br>
             <div class="mb-3" id="algorithmDiv">
@@ -61,27 +63,27 @@
               </select><br>
               <div class="row">
                 <div class="col">
-                  <label for="selectStartNode" class="form-label text-white"><i>Start Node</i></label>
+                  <label for="selectStartNode" class="form-label text-white"><i><i class="fa fa-map-marker" aria-hidden="true"></i>Start Node</i></label>
                   <select class="form-select" id="selectStartNode">
                   </select>
                 </div>
                 <div class="col">
-                  <label for="selectEndNode" class="form-label text-white"><i>End Node</i></label>
+                  <label for="selectEndNode" class="form-label text-white"><i><i class="fa fa-map-marker" aria-hidden="true"></i>End Node</i></label>
                   <select class="form-select" id="selectEndNode">
                   </select>
                 </div>
               </div>
               <br>
               <div class="d-grid">
-                <button class="btn btn-primary btn-block" onclick="runAlgorithm()" id="runAlgorithmButton">Run Algorithm</button> <br> <br>
+                <button class="btn btn-primary btn-block" onclick="runAlgorithm()" id="runAlgorithmButton"><i class="fa fa-play-circle" aria-hidden="true"></i> Run Algorithm</button> <br> <br>
               </div>
               
               <div class="row">
                 <div class="col">
-                  <button class="btn btn-outline-secondary form-control" onclick="colorGraphOnceBackward()" id="runAlgorithmButton">Previous Step</button> <br><br> 
+                  <button class="btn btn-outline-secondary form-control" onclick="colorGraphOnceBackward()" id="runAlgorithmButton"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> Previous Step</button> <br><br> 
                 </div>
                 <div class="col">
-                  <button class="btn btn-outline-primary form-control" onclick="colorGraphOnceForward()" id="runAlgorithmButton">Next Step</button> <br><br>
+                  <button class="btn btn-outline-primary form-control" onclick="colorGraphOnceForward()" id="runAlgorithmButton">Next Step <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></button> <br><br>
                 </div>
 
               </div>
