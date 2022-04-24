@@ -62,7 +62,6 @@ class BFS{
                         queue: [...this.queue],
                         edge: currentNode+'-'+adjacentNode,
                         edges:[...this.edges],
-                        finished:false
                     });
                     console.log(adjacentNode+' not present so pushing');
                     this.queue.push(adjacentNode);
