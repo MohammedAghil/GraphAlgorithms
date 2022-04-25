@@ -13,6 +13,7 @@
   <script src="./js/helpers/graphColorHelper.js"></script>
   <script src="./js/algorithms/bfs.js"></script>
   <script src="./js/algorithms/dfs.js"></script>
+  <script src="./js/algorithms/djkstra.js"></script>
   <script src="./js/helpers/runAlgorithmHelper.js"></script>
   
   
@@ -61,8 +62,7 @@
               <select class="form-select" id="selectAlgorithm">
                 <option>BFS</option>
                 <option>DFS</option>
-                <option>Prims</option>
-                <option>Kruskal</option>
+                <option>Dijkstra</option>
               </select><br>
               <div class="row">
                 <div class="col">
@@ -157,7 +157,7 @@ let cytoscapeUndirectedStyle = [
           },
         ]
 
-let cy = window.cy = cytoscape({
+const cy = window.cy = cytoscape({
         container: document.getElementById('cy'),
         elements: {
           nodes: [],
@@ -172,6 +172,7 @@ let cy = window.cy = cytoscape({
     const modelInstance = new Model(directed);
     const bfsInstance = new BFS(modelInstance);
     const dfsInstance = new DFS(modelInstance);
+    const dijkstraInstance = new Dijkstra(modelInstance);
     const graphColorHelperInstance = new GraphColorHelper(cy,'#2ecc71', '#2ecc71');
 
 
@@ -229,7 +230,7 @@ let cy = window.cy = cytoscape({
           ]);
         }
         if(!modelInstance.hasEdge(from,to)){
-          modelInstance.addEdge(from,to);
+          modelInstance.addEdge(from,to,weight);
           cy.add({
           group: 'edges',
           data: {
