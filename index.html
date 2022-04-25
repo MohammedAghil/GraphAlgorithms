@@ -175,7 +175,6 @@ let cy = window.cy = cytoscape({
     const bfsInstance = new BFS(modelInstance);
     const dfsInstance = new DFS(modelInstance);
     const graphColorHelperInstance = new GraphColorHelper(cy,'#2ecc71', '#2ecc71');
-    const stepExporter = new StepsExporter();
 
 
   function getDirectedButtonSwitchValue() {
@@ -190,7 +189,6 @@ let cy = window.cy = cytoscape({
       }else{
         cy.style().fromJson(cytoscapeUndirectedStyle);
       }
-
 
 
       let formData = getFormData();
@@ -275,11 +273,6 @@ let cy = window.cy = cytoscape({
       document.getElementById("nodesAndEdgesDisplay").innerHTML = " "+nodes.length+" nodes and "+cy.edges().length+" edges.";
       document.getElementById("algorithmDiv").style.display = "block";
     }
-
-    
-
-
-
 
   </script>
 </body>

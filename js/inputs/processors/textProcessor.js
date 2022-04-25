@@ -23,17 +23,16 @@ function extractGraphConnectionsFromInputTextFormData(graphInputText){
 
 
 function setInfoTextAndStyle(startNode,endNode,finished){
+  document.getElementById("infoText").classList.remove("bg-info");
+  document.getElementById("infoText").classList.remove("bg-danger");
+  document.getElementById("infoText").classList.remove("bg-success");
   if(finished){
-    //remove class bg-info to make it green
-    document.getElementById("infoText").classList.remove("bg-info");
-    document.getElementById("infoText").classList.remove("bg-danger");
+    // make it green
     document.getElementById("infoText").classList.add("bg-success");
     document.getElementById("infoText").innerHTML = "There is a path from Source Node : "+startNode+" to Target Node : "+endNode;
 }
 else{
-  //remove class bg-success to make it red
-  document.getElementById("infoText").classList.remove("bg-info");
-  document.getElementById("infoText").classList.remove("bg-success");
+  //  make it red
   document.getElementById("infoText").classList.add("bg-danger");
   document.getElementById("infoText").innerHTML = "There is No path from Source Node : "+startNode+" to Target Node : "+endNode;
 }
