@@ -96,7 +96,14 @@
       
 
     </div>
-    <div class="col-sm-9" id="cy">Canvas</div>
+    <div class="col-sm-9">
+      <!--- two rows-->
+      <div class="row">
+          <h4 id="infoText" class="text-center bg-info text-white " style="padding: 10px;">Please Generate Graph and Run Algorithm</h4>
+          </div>
+          <div class="row" id="cy" style="height: 100vh;">
+          </div>
+    </div>
   </div>
 
 
@@ -268,6 +275,8 @@ let cy = window.cy = cytoscape({
       document.getElementById("nodesAndEdgesDisplay").innerHTML = " "+nodes.length+" nodes and "+cy.edges().length+" edges.";
       document.getElementById("algorithmDiv").style.display = "block";
     }
+
+    
 
 
 

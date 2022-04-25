@@ -12,6 +12,7 @@ function runAlgorithm(){
           let data = bfsInstance.run().data;
           graphColorHelperInstance.setEdges(data[data.length-1].edges);
           console.log(graphColorHelperInstance.edges);
+          setInfoTextAndStyle(startNode,endNode,bfsInstance.finished);
         }
         else if(selectedAlgorithm == "DFS"){
           console.log("DFS");
@@ -20,6 +21,7 @@ function runAlgorithm(){
           let data = dfsInstance.run().data;
           graphColorHelperInstance.setEdges(data[data.length-1].edges);
           console.log(graphColorHelperInstance.edges);
+          setInfoTextAndStyle(startNode,endNode,dfsInstance.finished);
         }
         else{
           console.log("No Algorithm Selected");
