@@ -14,6 +14,7 @@
   <script src="./js/helpers/graphColorHelper.js"></script>
   <script src="./js/algorithms/bfs.js"></script>
   <script src="./js/algorithms/dfs.js"></script>
+  <script src="./js/algorithms/djkstra.js"></script>
   <script src="./js/helpers/runAlgorithmHelper.js"></script>
 <style>
     #cy {
@@ -69,8 +70,6 @@
               <select class="form-select" id="selectAlgorithm">
                 <option>BFS</option>
                 <option>DFS</option>
-                <option>Prims</option>
-                <option>Kruskal</option>
               </select><br>
               <div class="row">
                 <div class="col">
@@ -208,6 +207,7 @@
     const modelInstance = new Model();
     const bfsInstance = new BFS(modelInstance);
     const dfsInstance = new DFS(modelInstance);
+    const dijkstraInstance = new Dijkstra(modelInstance);
     const graphColorHelperInstance = new GraphColorHelper(cy,'#2ecc71', '#2ecc71');
 
 
