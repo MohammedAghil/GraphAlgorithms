@@ -3,6 +3,9 @@ class Model{
         this.matrix = {}; //adjacency matrix in which edges and nodes are stored
         this.directed = directed;
     }
+    setDirected(directed){
+        this.directed = directed;
+    }
 
     reset(){
         this.matrix = {};
@@ -51,7 +54,7 @@ class Model{
         if(!this.directed) this.matrix[b][a]=edgeObject;
         
     }
-    
+
     removeEdge(a,b){
         this.matrix[a].delete(b);
     }

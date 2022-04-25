@@ -43,6 +43,10 @@
 <div class="row" style="height: 100vh;">
     <div class="col-sm-3 bg-dark" style="padding-left: 1%;">
         <h4 class="text-white lead"> Here You may fill in Data in the Text Area and Run Algorithms.</h1>
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="directedButtonSwitch">
+            <label class="form-check-label text-white" for="directedButtonSwitch">Directed Graph</label>
+          </div>
             <div class="mb-3">
                 <textarea class="form-control" rows="6" id="graphInputText" name="graphInputText"></textarea>
               </div>
@@ -99,13 +103,37 @@
 
   <script>
 //initialize cytoscape
-let cy = window.cy = cytoscape({
-        container: document.getElementById('cy'),
-        elements: {
-          nodes: [],
-          edges: []
-        },
-        style: [
+let cytoscapeDirectedStyle  = [
+          {
+            selector: 'node',
+            style: {
+              'background-color': '#666',
+              'label': 'data(id)'
+            }
+          },
+          {
+            selector: 'edge',
+            style: {
+              'width': 3,
+              'line-color': '#666',
+              'target-arrow-color': '#666',
+              'target-arrow-shape': 'triangle',
+              'curve-style': 'straight',
+              "edge-text-rotation": "autorotate",
+              "edge-text-color": "#666",
+              
+            }
+          },
+          {
+            selector: "edge[label]",
+            style: {
+              "label": "data(label)",
+              "width": 3
+            }
+          },
+        ]
+
+let cytoscapeUndirectedStyle = [
           {
             selector: 'node',
             style: {
@@ -118,26 +146,50 @@ let cy = window.cy = cytoscape({
             style: {
               'width': 3,
               'line-color': '#ccc',
-              'target-arrow-color': '#ccc',
-              'target-arrow-shape': 'triangle'
+              'curve-style': 'straight',
+              "edge-text-rotation": "autorotate"
             }
-          }
+          },
         ]
+
+let cy = window.cy = cytoscape({
+        container: document.getElementById('cy'),
+        elements: {
+          nodes: [],
+          edges: []
+        },
+        style: cytoscapeUndirectedStyle
       });
 
 //my custom initializer
     document.getElementById("algorithmDiv").style.display = "none";
-    const modelInstance = new Model();
+    let directed = false;
+    const modelInstance = new Model(directed);
     const bfsInstance = new BFS(modelInstance);
     const dfsInstance = new DFS(modelInstance);
     const graphColorHelperInstance = new GraphColorHelper(cy,'#2ecc71', '#2ecc71');
     const stepExporter = new StepsExporter();
 
+
+  function getDirectedButtonSwitchValue() {
+    return document.getElementById("directedButtonSwitch").checked;
+  }
+
   //on submit button click (generate graph)
     function onSubmitButton(){
+      directed = getDirectedButtonSwitchValue();
+      if(directed){
+        cy.style().fromJson(cytoscapeDirectedStyle);
+      }else{
+        cy.style().fromJson(cytoscapeUndirectedStyle);
+      }
+
+
+
       let formData = getFormData();
       let graphConnections = extractGraphConnectionsFromInputTextFormData(formData);
       modelInstance.reset();
+      modelInstance.setDirected(directed);
       //delete all nodes and edges from cytoscape
       cy.remove('node');
       cy.remove('edge');
@@ -181,7 +233,8 @@ let cy = window.cy = cytoscape({
             id: from  + '-'+ to,
             source: from,
             target: to,
-            weight: weight
+            weight: weight,
+            label: weight,
           }
         });
         }
@@ -192,7 +245,8 @@ let cy = window.cy = cytoscape({
         name: 'breadthfirst',
         fit: true
       }).run();
-
+      
+    
       //if no errors in generating graph then show the select element and submit button
       //Add Nodes to the select element for start and end
       let nodes = modelInstance.getNodes();

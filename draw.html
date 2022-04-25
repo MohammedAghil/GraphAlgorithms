@@ -20,9 +20,6 @@
     #cy {
   height: 100%;
 }
-.clicked {
-   background-color: black;
-}
 </style>
 </head>
 <body>
@@ -199,15 +196,12 @@
 });
 
   //initialization of classes
-  document.getElementById("algorithmDiv").style.display = "none";
+    document.getElementById("algorithmDiv").style.display = "none";
     const modelInstance = new Model();
     const bfsInstance = new BFS(modelInstance);
     const dfsInstance = new DFS(modelInstance);
     const graphColorHelperInstance = new GraphColorHelper(cy,'#2ecc71', '#2ecc71');
     const stepExporter = new StepsExporter();
-
-
-
 
 
 function selectOption(val){
@@ -232,7 +226,8 @@ function selectOption(val){
       //get the nodes and edges from cytoscape
       let allNodes = cy.nodes();
       let allEdges = cy.edges();
-      //print the nodes and edges to the console in forEach loop
+      
+      //add the nodes and edges to the model in forEach loop
       allNodes.forEach(function(node){
         if (!modelInstance.hasNode(node)) {
           modelInstance.addNode(node.id());
