@@ -30,6 +30,16 @@ class BFS{
         this.previousNode = null;
     }
 
+    createEmptystepsExport(){
+        this.stepsExport = [{
+            currentNode: this.currentNode,
+            adjacentNode: [],
+            step: this.step,
+            visited: [this.currentNode],
+            stack: [],
+            edges: [],
+        }];
+    }
 
     run(){
         this.step+=1;
@@ -78,7 +88,9 @@ class BFS{
                 }
             }
         }
-
+        if(this.stepsExport.length == 0){
+            this.createEmptystepsExport();
+        }
         return {data:this.stepsExport,finished:this.finished};
     }
 

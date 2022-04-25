@@ -10,6 +10,7 @@ function runAlgorithm(){
           bfsInstance.reset();
           bfsInstance.setStartAndEndNode(startNode,endNode);
           let data = bfsInstance.run().data;
+          console.log(data);
           graphColorHelperInstance.setEdges(data[data.length-1].edges);
           console.log(graphColorHelperInstance.edges);
           setInfoTextAndStyle(startNode,endNode,bfsInstance.finished);

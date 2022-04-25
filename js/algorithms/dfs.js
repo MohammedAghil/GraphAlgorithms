@@ -11,6 +11,18 @@ class DFS{
         this.currentNode = null;
         this.stepsExport = [];
     }
+
+    createEmptystepsExport(){
+        this.stepsExport = [{
+            currentNode: this.currentNode,
+            adjacentNode: [],
+            step: this.step,
+            visited: [this.currentNode],
+            stack: [],
+            edges: [],
+        }];
+    }
+
     reset(){
         this.startNode = null;
         this.endNode = null;
@@ -57,6 +69,9 @@ class DFS{
 
     run(){
         this.recursiveRun(this.startNode);
+        if(this.stepsExport.length==0){
+            this.createEmptystepsExport();
+        }
         return {data:this.stepsExport,finished:this.finished};
     }
 
